@@ -7,7 +7,7 @@ import androidx.core.view.WindowCompat
 abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        translateStatusBarAndBottomNavigationBar()
+        translateStatusBarAndBottomNavigationBar()
     }
 
     private fun translateStatusBarAndBottomNavigationBar() {

@@ -14,4 +14,18 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="List" parent="Theme.AndroidFeaturesLibrary" />
+
+    <style name="List.Item" parent="List" />
+
+    <style name="List.Item.Simple" parent="List.Item"></style>
+
+    <style name="List.Item.Simple.Title" parent="List.Item.Simple">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="List.Item.Simple.SubTitle" parent="List.Item.Simple">
+        <item name="android:textSize">13sp</item>
+    </style>
 </resources>
