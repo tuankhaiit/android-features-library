@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tuankhaiit.androidfeatureslibrary.R
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseFragment
 import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.adapter.SimpleAdapter
 import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.model.SimpleItem
+import com.tuankhaiit.androidfeatureslibrary.presentation.extension.paddingToFitBottomNavigation
+import com.tuankhaiit.androidfeatureslibrary.presentation.extension.marginToFitStatusBar
 
 class SimpleListFragment : BaseFragment() {
     override fun onCreateView(
@@ -22,7 +25,15 @@ class SimpleListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
         setupRecyclerView()
+    }
+
+    private fun setupToolbar() {
+        view?.findViewById<Toolbar>(R.id.toolbar)?.apply {
+            marginToFitStatusBar()
+            requireBaseActivity()?.setSupportActionBar(this)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -33,6 +44,7 @@ class SimpleListFragment : BaseFragment() {
                     submitList(it.toList())
                 }
             }
+            rvList.paddingToFitBottomNavigation()
         }
     }
 

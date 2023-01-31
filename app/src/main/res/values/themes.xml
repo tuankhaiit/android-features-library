@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -19,7 +20,9 @@
 
     <style name="List.Item" parent="List" />
 
-    <style name="List.Item.Simple" parent="List.Item"></style>
+    <style name="List.Item.Simple" parent="List.Item">
+
+    </style>
 
     <style name="List.Item.Simple.Title" parent="List.Item.Simple">
         <item name="android:textSize">16sp</item>
