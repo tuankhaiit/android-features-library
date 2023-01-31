@@ -14,3 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Android Features Library"
 include ':app'
+include ':simple_list'
+include ':core'
+include ':simple_bottom_menu'

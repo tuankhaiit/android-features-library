@@ -1,10 +1,10 @@
 package com.tuankhaiit.androidfeatureslibrary.presentation
 
 import android.os.Bundle
+import com.tuankhaiiit.androidfeatureslibrary.simplelist.SimpleListFragment
 import com.tuankhaiit.androidfeatureslibrary.R
-import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseActivity
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.SimpleListFragment
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.model.SimpleItem
+import com.tuankhaiit.androidfeatureslibrary.simple_bottom_menu.SimpleBottomNavigationFragment
+import com.tuankhaiit.core.presentation.activity.BaseActivity
 
 class RootActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,11 +12,7 @@ class RootActivity : BaseActivity() {
         setContentView(R.layout.activity_root)
 
         supportFragmentManager.beginTransaction().apply {
-            val data = ArrayList<SimpleItem>()
-            (1..30).forEach {
-                data.add(SimpleItem("This is $it", "Android Features Library"))
-            }
-            replace(R.id.rootContainer, SimpleListFragment.newInstance(data))
+            replace(R.id.rootContainer, SimpleBottomNavigationFragment.newInstance())
             commit()
         }
     }
