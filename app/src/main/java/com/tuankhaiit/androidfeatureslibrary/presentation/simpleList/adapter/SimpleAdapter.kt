@@ -5,15 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.tuankhaiit.androidfeatureslibrary.R
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.adapter.BaseAdapter
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.model.SimpleItem
+import com.tuankhaiit.androidfeatureslibrary.presentation.base.adapter.BasePagingAdapter
+import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.model.SimpleUI
 
-class SimpleAdapter : BaseAdapter<SimpleItem, SimpleViewHolder>(object : DiffUtil.ItemCallback<SimpleItem>() {
-    override fun areItemsTheSame(oldItem: SimpleItem, newItem: SimpleItem): Boolean {
-        return oldItem == newItem
+class SimpleAdapter : BasePagingAdapter<SimpleUI, SimpleViewHolder>(object : DiffUtil.ItemCallback<SimpleUI>() {
+    override fun areItemsTheSame(oldItem: SimpleUI, newItem: SimpleUI): Boolean {
+        return false
     }
 
-    override fun areContentsTheSame(oldItem: SimpleItem, newItem: SimpleItem): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: SimpleUI, newItem: SimpleUI): Boolean {
+        return false
     }
 
 }) {
