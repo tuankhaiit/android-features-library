@@ -16,8 +16,9 @@ class SimpleRepositoryImpl @Inject constructor(private val dataSource: SimpleDat
     override fun getSearchResultStream(queryDataModel: SimpleQueryDataModel): Flow<PagingData<SimpleModel>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false
+                pageSize = 20,
+                enablePlaceholders = false,
+                prefetchDistance = 1
             ),
             pagingSourceFactory = { SimplePagingSource(dataSource, queryDataModel) }
         ).flow

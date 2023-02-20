@@ -13,10 +13,10 @@ class SimpleDataSource @Inject constructor() : ServiceRemoteSource() {
         return try {
             delay(1000)
 
-            if (Random.nextInt(0, 3) == 2) throw NullPointerException()
+            if (Random.nextInt(0, 3) == 2) throw NullPointerException("Occurred error!!")
 
             val response = SimplesResponseDTO(1, data = (0..(body.pageSize ?: 10)).map {
-                SimpleDTO("$it", "The number $it", "Android Feature library")
+                SimpleDTO("$it", "The number ${body.page} - $it", "Android Feature library")
             })
             DataState.Result(response)
         } catch (e: Exception) {

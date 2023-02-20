@@ -1,4 +1,4 @@
-package com.tuankhaiit.androidfeatureslibrary.presentation.common
+package com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter
 
 import android.view.ViewGroup
 import androidx.paging.LoadState
