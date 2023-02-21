@@ -13,4 +13,7 @@ class RepoModel(
     val stars: Int,
     val forks: Int,
     val language: String
-) : Parcelable
+) : Parcelable {
+    val roundedStarCount: Int
+        get() = stars / 10_000
+}

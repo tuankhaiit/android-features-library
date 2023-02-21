@@ -3,16 +3,16 @@ package com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.adapter.BasePagingAdapter
-import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonUI
+import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
 
 abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
-    BasePagingAdapter<CommonUI, CommonUIStateViewHolder>(object :
-        DiffUtil.ItemCallback<CommonUI>() {
-        override fun areItemsTheSame(oldItem: CommonUI, newItem: CommonUI): Boolean {
+    BasePagingAdapter<CommonItemUI, CommonUIStateViewHolder>(object :
+        DiffUtil.ItemCallback<CommonItemUI>() {
+        override fun areItemsTheSame(oldItem: CommonItemUI, newItem: CommonItemUI): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: CommonUI, newItem: CommonUI): Boolean {
+        override fun areContentsTheSame(oldItem: CommonItemUI, newItem: CommonItemUI): Boolean {
             return oldItem == newItem
         }
 
@@ -20,8 +20,9 @@ abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CommonUI.Data<*> -> DATA_TYPE
-            is CommonUI.Divider -> DIVIDER_TYPE
+            is CommonItemUI.Data<*> -> DATA_TYPE
+            is CommonItemUI.Header-> HEADER_TYPE
+            is CommonItemUI.Divider -> DIVIDER_TYPE
             null -> throw UnsupportedOperationException("Unknown view")
         }
 
@@ -30,6 +31,7 @@ abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonUIStateViewHolder {
         return when (viewType) {
             DATA_TYPE -> onCreateDataViewHolder(parent)
+            HEADER_TYPE -> CommonHeaderViewHolder.create(parent)
             else -> CommonDividerViewHolder.create(parent)
         }
     }
@@ -43,6 +45,7 @@ abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
 
     companion object {
         protected const val DATA_TYPE: Int = 0
-        protected const val DIVIDER_TYPE: Int = 1
+        protected const val HEADER_TYPE: Int = 1
+        protected const val DIVIDER_TYPE: Int = 2
     }
 }

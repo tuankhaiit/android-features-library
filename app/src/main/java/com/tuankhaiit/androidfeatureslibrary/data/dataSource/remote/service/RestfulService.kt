@@ -9,7 +9,7 @@ class RestfulService private constructor() {
     companion object {
         fun <T> create(baseUrl: String, serviceClass: Class<T>): T {
             val logger = HttpLoggingInterceptor()
-            logger.level = HttpLoggingInterceptor.Level.BASIC
+            logger.level = HttpLoggingInterceptor.Level.BODY
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logger)

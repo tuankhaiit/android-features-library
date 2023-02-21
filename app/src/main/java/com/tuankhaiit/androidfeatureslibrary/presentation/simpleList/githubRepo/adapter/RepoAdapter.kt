@@ -1,4 +1,4 @@
-package com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo
+package com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
