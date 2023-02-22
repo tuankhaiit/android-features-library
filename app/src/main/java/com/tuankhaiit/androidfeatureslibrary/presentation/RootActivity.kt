@@ -3,7 +3,7 @@ package com.tuankhaiit.androidfeatureslibrary.presentation
 import android.os.Bundle
 import com.tuankhaiit.androidfeatureslibrary.R
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseActivity
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.GithubRepoFragment
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.GithubRepoFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

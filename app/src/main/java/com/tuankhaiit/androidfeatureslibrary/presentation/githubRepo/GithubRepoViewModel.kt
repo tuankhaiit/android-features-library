@@ -1,4 +1,4 @@
-package com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo
+package com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,12 +11,14 @@ import com.tuankhaiit.androidfeatureslibrary.domain.model.RepoModel
 import com.tuankhaiit.androidfeatureslibrary.domain.model.SimpleQueryDataModel
 import com.tuankhaiit.androidfeatureslibrary.domain.repository.RepoRepository
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.model.GithubRepoUiAction
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.model.GithubRepoUiState
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiAction
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -44,6 +46,8 @@ class GithubRepoViewModel @Inject constructor(
      */
     val uiActions: (GithubRepoUiAction) -> Unit
 
+    val openRepoEvent: Flow<RepoModel>
+
     init {
         val initialQuery: SimpleQueryDataModel =
             savedStateHandle[LAST_SEARCH_QUERY] ?: DEFAULT_QUERY
@@ -51,6 +55,14 @@ class GithubRepoViewModel @Inject constructor(
             savedStateHandle[LAST_QUERY_SCROLLED] ?: DEFAULT_QUERY
 
         val actionFlow = MutableSharedFlow<GithubRepoUiAction>()
+
+        openRepoEvent = actionFlow
+            .filterIsInstance<GithubRepoUiAction.ItemClick>()
+            .map { it.model }
+            .shareIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed()
+            )
 
         val searchActionFlow = actionFlow
             .filterIsInstance<GithubRepoUiAction.Search>()
@@ -72,7 +84,7 @@ class GithubRepoViewModel @Inject constructor(
         pagingDataFlow = searchActionFlow.flatMapLatest { searchData(it.query) }
             .map { pagingData ->
                 pagingData.map {
-                    com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI.Data(it)
+                    CommonItemUI.Data(it)
                 }
             }.map {
                 it.insertSeparators { before, after ->

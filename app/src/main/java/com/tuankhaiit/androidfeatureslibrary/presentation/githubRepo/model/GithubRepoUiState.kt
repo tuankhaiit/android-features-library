@@ -1,4 +1,4 @@
-package com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.model
+package com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model
 
 import com.tuankhaiit.androidfeatureslibrary.domain.model.SimpleQueryDataModel
 

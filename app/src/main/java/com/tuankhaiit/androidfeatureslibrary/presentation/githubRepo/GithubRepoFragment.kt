@@ -1,4 +1,4 @@
-package com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo
+package com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo
 
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -21,17 +22,22 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tuankhaiit.androidfeatureslibrary.databinding.FragmentGithubRepoBinding
+import com.tuankhaiit.androidfeatureslibrary.domain.model.RepoModel
 import com.tuankhaiit.androidfeatureslibrary.domain.model.SimpleQueryDataModel
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseFragment
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter.CommonLoadStateAdapter
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.adapter.RepoAdapter
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.model.GithubRepoUiAction
-import com.tuankhaiit.androidfeatureslibrary.presentation.simpleList.githubRepo.model.GithubRepoUiState
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.adapter.OnRepoItemClickListener
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.adapter.RepoAdapter
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiAction
+import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiState
+import com.tuankhaiit.androidfeatureslibrary.presentation.webView.WebViewActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@FlowPreview
 @AndroidEntryPoint
 class GithubRepoFragment : BaseFragment() {
 
@@ -57,14 +63,25 @@ class GithubRepoFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.bindState(viewLifecycleOwner, viewModel.state, viewModel.uiActions)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.openRepoEvent.collectLatest {
+                log("onClick: ${it.id}")
+//                WebViewActivity.start(requireContext(), it.url)
+            }
+        }
     }
 
     private fun FragmentGithubRepoBinding.bindState(
         lifecycleOwner: LifecycleOwner,
         uiState: StateFlow<GithubRepoUiState>,
-        uiActions: (GithubRepoUiAction) -> Unit
+        uiActions: (GithubRepoUiAction) -> Unit,
     ) {
-        val repoAdapter = RepoAdapter()
+        val repoAdapter = RepoAdapter(object : OnRepoItemClickListener {
+            override fun onRepoItemClick(view: View, item: RepoModel) {
+                uiActions(GithubRepoUiAction.ItemClick(item))
+            }
+        })
 
         val refresh = CommonLoadStateAdapter { repoAdapter.retry() }
         val header = CommonLoadStateAdapter { repoAdapter.retry() }
@@ -94,7 +111,7 @@ class GithubRepoFragment : BaseFragment() {
     private fun FragmentGithubRepoBinding.searchRepoWithNewQuery(onQueryChanged: (GithubRepoUiAction.Search) -> Unit) {
         edtQuery.text.toString().trim().let {
             if (it.isNotBlank()) {
-//                rvList.scrollToPosition(0)
+                rvList.scrollToPosition(0)
                 onQueryChanged(GithubRepoUiAction.Search(query = SimpleQueryDataModel.query(it)))
             }
         }
@@ -128,7 +145,7 @@ class GithubRepoFragment : BaseFragment() {
             }
         }
         lifecycleOwner.lifecycleScope.launch {
-            textFlow.debounce(2000L).collect {
+            textFlow.debounce(1000L).collect {
                 searchRepoWithNewQuery(onQueryChanged)
             }
         }
@@ -221,8 +238,6 @@ class GithubRepoFragment : BaseFragment() {
                                 Toast.LENGTH_LONG
                             ).show()
                         }
-
-                        log("trigger visible")
                     }
             }
         }
