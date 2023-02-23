@@ -1,9 +1,14 @@
 package com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.tuankhaiit.androidfeatureslibrary.databinding.ItemCommonHeaderBinding
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.adapter.BasePagingAdapter
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
+import kotlinx.coroutines.NonDisposableHandle.parent
 
 abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
     BasePagingAdapter<CommonItemUI, CommonUIStateViewHolder>(object :
@@ -41,6 +46,15 @@ abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
     override fun onBindViewHolder(holder: CommonUIStateViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+    }
+
+    fun isHeader(position: Int) = getItem(position) is CommonItemUI.Header
+
+    fun getHeaderView(parent: RecyclerView, position: Int): View {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemCommonHeaderBinding.inflate(inflater, parent, false)
+
+        return binding.root
     }
 
     companion object {

@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -27,6 +26,7 @@ import com.tuankhaiit.androidfeatureslibrary.domain.model.SimpleQueryDataModel
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseFragment
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter.CommonLoadStateAdapter
+import com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter.StickyHeaderItemDecoration
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.adapter.OnRepoItemClickListener
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.adapter.RepoAdapter
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiAction
@@ -67,7 +67,7 @@ class GithubRepoFragment : BaseFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.openRepoEvent.collectLatest {
                 log("onClick: ${it.id}")
-//                WebViewActivity.start(requireContext(), it.url)
+                WebViewActivity.start(requireContext(), it.url)
             }
         }
     }
@@ -94,6 +94,15 @@ class GithubRepoFragment : BaseFragment() {
 
         binding.rvList.apply {
             layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(StickyHeaderItemDecoration(object : StickyHeaderItemDecoration.SectionCallback {
+                override fun isHeader(position: Int): Boolean {
+                    return repoAdapter.isHeader(position)
+                }
+
+                override fun getHeaderLayoutView(list: RecyclerView, position: Int): View? {
+                    return repoAdapter.getHeaderView(list, position)
+                }
+            }))
             adapter = ConcatAdapter(refresh, header, repoAdapter, footer)
         }
 

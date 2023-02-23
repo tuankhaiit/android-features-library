@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
+import androidx.activity.addCallback
 import com.tuankhaiit.androidfeatureslibrary.databinding.ActivityWebviewBinding
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseActivity
 
@@ -16,12 +18,19 @@ class WebViewActivity : BaseActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableFitSystemWindow = true
         binding = ActivityWebviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         baseUrl = intent?.getStringExtra(URL_KEY) ?: "https://google.com"
 
-        setSupportActionBar(binding.toolbar)
+
+        binding.toolbar.apply {
+            setSupportActionBar(this)
+            setNavigationOnClickListener {
+                finish()
+            }
+        }
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
         }
@@ -33,6 +42,16 @@ class WebViewActivity : BaseActivity() {
             webChromeClient = WebChromeClient()
 
             loadUrl(baseUrl)
+        }
+
+        onBackPressedDispatcher.addCallback {
+            binding.webView.apply {
+                if (canGoBack()) {
+                    goBack()
+                } else {
+                    finish()
+                }
+            }
         }
     }
 

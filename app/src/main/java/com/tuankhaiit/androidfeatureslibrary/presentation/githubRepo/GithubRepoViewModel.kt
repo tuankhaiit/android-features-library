@@ -10,15 +10,14 @@ import androidx.paging.map
 import com.tuankhaiit.androidfeatureslibrary.domain.model.RepoModel
 import com.tuankhaiit.androidfeatureslibrary.domain.model.SimpleQueryDataModel
 import com.tuankhaiit.androidfeatureslibrary.domain.repository.RepoRepository
+import com.tuankhaiit.androidfeatureslibrary.operator.dropUntilTimeout
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiAction
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -58,6 +57,7 @@ class GithubRepoViewModel @Inject constructor(
 
         openRepoEvent = actionFlow
             .filterIsInstance<GithubRepoUiAction.ItemClick>()
+            .dropUntilTimeout(1000)
             .map { it.model }
             .shareIn(
                 scope = viewModelScope,
