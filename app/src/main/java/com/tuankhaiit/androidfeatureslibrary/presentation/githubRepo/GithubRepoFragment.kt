@@ -62,6 +62,7 @@ class GithubRepoFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar(view)
         binding.bindState(viewLifecycleOwner, viewModel.state, viewModel.uiActions)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -94,16 +95,8 @@ class GithubRepoFragment : BaseFragment() {
 
         binding.rvList.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(StickyHeaderItemDecoration(object : StickyHeaderItemDecoration.SectionCallback {
-                override fun isHeader(position: Int): Boolean {
-                    return repoAdapter.isHeader(position)
-                }
-
-                override fun getHeaderLayoutView(list: RecyclerView, position: Int): View? {
-                    return repoAdapter.getHeaderView(list, position)
-                }
-            }))
             adapter = ConcatAdapter(refresh, header, repoAdapter, footer)
+            StickyHeaderItemDecoration(repoAdapter).attachToRecyclerView(this)
         }
 
         refreshLayout.setOnRefreshListener {
@@ -133,6 +126,7 @@ class GithubRepoFragment : BaseFragment() {
     ) {
         edtQuery.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
+                hideKeyboardAndClearFocus()
                 searchRepoWithNewQuery(onQueryChanged)
                 true
             } else {
@@ -141,6 +135,7 @@ class GithubRepoFragment : BaseFragment() {
         }
         edtQuery.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                hideKeyboardAndClearFocus()
                 searchRepoWithNewQuery(onQueryChanged)
                 true
             } else {
@@ -165,7 +160,9 @@ class GithubRepoFragment : BaseFragment() {
                 .collect {
                     if (edtQuery.text.toString() != it.text) {
                         edtQuery.setText(it.text)
-                        edtQuery.setSelection(it.text.length)
+                        if (edtQuery.hasFocus()) {
+                            edtQuery.setSelection(it.text.length)
+                        }
                     }
                 }
         }

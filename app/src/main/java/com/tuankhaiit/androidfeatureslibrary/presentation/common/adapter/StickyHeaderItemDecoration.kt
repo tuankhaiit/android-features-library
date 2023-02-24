@@ -3,73 +3,85 @@ package com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter
 import android.graphics.Canvas
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.search.SearchBar
+import com.tuankhaiit.androidfeatureslibrary.R
+import kotlin.properties.Delegates
 
-class StickyHeaderItemDecoration(private val sectionCallback: SectionCallback) : RecyclerView.ItemDecoration() {
+class StickyHeaderItemDecoration(
+    private val callback: StickyHeaderItemCallback
+) : RecyclerView.ItemDecoration() {
+    fun attachToRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.addItemDecoration(this)
+    }
 
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        super.onDrawOver(c, parent, state)
+    override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDrawOver(canvas, parent, state)
+        if (callback.itemCount() == 0) {
+            return
+        }
 
-        val topChild = parent.getChildAt(0) ?: return
+        val layoutManager = parent.layoutManager
+        val topChildPosition = if (layoutManager is LinearLayoutManager) {
+            layoutManager.findFirstVisibleItemPosition()
+        } else {
+            parent.getChildAt(0)?.let { topChild ->
+                parent.getChildAdapterPosition(topChild)
+            } ?: RecyclerView.NO_POSITION
+        }
 
-        val topChildPosition = parent.getChildAdapterPosition(topChild)
         if (topChildPosition == RecyclerView.NO_POSITION) {
             return
         }
 
-        val currentHeader: View = sectionCallback.getHeaderLayoutView(parent, topChildPosition) ?: return
+        val currentHeader: View =
+            callback.getHeaderLayoutView(parent, topChildPosition)
+                ?: return
 
-        fixLayoutSize(parent, currentHeader, topChild.measuredHeight)
+        fixLayoutSize(parent, currentHeader)
 
-        val contactPoint = currentHeader.bottom
+        val viewOverlappedByHeader: View =
+            findViewOverlappedByHeader(parent, currentHeader.bottom) ?: return
 
-        val childInContact: View = getChildInContact(parent, contactPoint) ?: return
-
-        val childAdapterPosition = parent.getChildAdapterPosition(childInContact)
-        if (childAdapterPosition == -1)
-            return
+        val overlappedByHeaderPosition = parent.getChildAdapterPosition(viewOverlappedByHeader)
+        if (overlappedByHeaderPosition == RecyclerView.NO_POSITION) return
 
         when {
-            sectionCallback.isHeader(childAdapterPosition) ->
-                moveHeader(c, currentHeader, childInContact)
+            callback.isHeader(overlappedByHeaderPosition) ->
+                moveHeader(canvas, currentHeader, viewOverlappedByHeader)
             else ->
-                drawHeader(c, currentHeader)
+                drawHeader(canvas, currentHeader)
         }
     }
 
-    private fun getChildInContact(parent: RecyclerView, contactPoint: Int): View? {
+    private fun findViewOverlappedByHeader(parent: RecyclerView, contactPoint: Int): View? {
         var childInContact: View? = null
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
-            if (child.bottom > contactPoint) {
-                if (child.top <= contactPoint) {
-                    childInContact = child
-                    break
-                }
+            if (child.top <= contactPoint && child.bottom > contactPoint) {
+                childInContact = child
+                break
             }
         }
         return childInContact
     }
 
-    private fun moveHeader(c: Canvas, currentHeader: View, nextHeader: View) {
-        c.save()
-        c.translate(0f, nextHeader.top - currentHeader.height.toFloat())
-        currentHeader.draw(c)
-        c.restore()
+    private fun moveHeader(canvas: Canvas, currentHeader: View, nextHeader: View) {
+        canvas.save()
+        canvas.translate(0f, nextHeader.top - currentHeader.height.toFloat())
+        currentHeader.draw(canvas)
+        canvas.restore()
     }
 
-    private fun drawHeader(c: Canvas, header: View) {
-        c.save()
-        c.translate(0f, 0f)
-        header.draw(c)
-        c.restore()
+    private fun drawHeader(canvas: Canvas, header: View) {
+        canvas.save()
+        canvas.translate(0f, 0f)
+        header.draw(canvas)
+        canvas.restore()
     }
 
-    /**
-     * Measures the header view to make sure its size is greater than 0 and will be drawn
-     * https://yoda.entelect.co.za/view/9627/how-to-android-recyclerview-item-decorations
-     */
-    private fun fixLayoutSize(parent: ViewGroup, view: View, height: Int) {
+    private fun fixLayoutSize(parent: ViewGroup, view: View) {
         val widthSpec = View.MeasureSpec.makeMeasureSpec(
             parent.width,
             View.MeasureSpec.EXACTLY
@@ -86,14 +98,15 @@ class StickyHeaderItemDecoration(private val sectionCallback: SectionCallback) :
         val childHeight: Int = ViewGroup.getChildMeasureSpec(
             heightSpec,
             parent.paddingTop + parent.paddingBottom,
-            height
+            view.layoutParams.height
         )
         view.measure(childWidth, childHeight)
         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
     }
 
-    interface SectionCallback {
+    interface StickyHeaderItemCallback {
+        fun itemCount(): Int
         fun isHeader(position: Int): Boolean
-        fun getHeaderLayoutView(list: RecyclerView, position: Int): View?
+        fun getHeaderLayoutView(parent: RecyclerView, position: Int): View?
     }
 }

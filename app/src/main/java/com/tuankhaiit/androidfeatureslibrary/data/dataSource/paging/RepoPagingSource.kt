@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.tuankhaiit.androidfeatureslibrary.data.dataSource.remote.service.GithubService
 import com.tuankhaiit.androidfeatureslibrary.domain.model.RepoModel
 import com.tuankhaiit.androidfeatureslibrary.domain.model.SimpleQueryDataModel
+import kotlinx.coroutines.delay
 
 class RepoPagingSource(
     private val apiService: GithubService,

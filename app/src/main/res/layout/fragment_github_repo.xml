@@ -5,14 +5,32 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/edtQuery"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:imeOptions="actionSearch"
-        android:maxLines="1"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ABC" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/bgSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_search_field"
+        app:layout_constraintBottom_toBottomOf="@id/edtQuery"
+        app:layout_constraintTop_toTopOf="@id/edtQuery" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edtQuery"
+        style="@style/List.SearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout"

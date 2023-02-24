@@ -1,14 +1,12 @@
 package com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter
 
-import android.view.LayoutInflater
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tuankhaiit.androidfeatureslibrary.databinding.ItemCommonHeaderBinding
 import com.tuankhaiit.androidfeatureslibrary.presentation.base.adapter.BasePagingAdapter
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
-import kotlinx.coroutines.NonDisposableHandle.parent
 
 abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
     BasePagingAdapter<CommonItemUI, CommonUIStateViewHolder>(object :
@@ -21,12 +19,12 @@ abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
             return oldItem == newItem
         }
 
-    }) {
+    }), StickyHeaderItemDecoration.StickyHeaderItemCallback {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is CommonItemUI.Data<*> -> DATA_TYPE
-            is CommonItemUI.Header-> HEADER_TYPE
+            is CommonItemUI.Header -> HEADER_TYPE
             is CommonItemUI.Divider -> DIVIDER_TYPE
             null -> throw UnsupportedOperationException("Unknown view")
         }
@@ -48,18 +46,36 @@ abstract class CommonUIStateAdapter<D, VH : CommonUIStateViewHolder> :
         holder.bind(item)
     }
 
-    fun isHeader(position: Int) = getItem(position) is CommonItemUI.Header
+    override fun itemCount(): Int {
+        return itemCount
+    }
 
-    fun getHeaderView(parent: RecyclerView, position: Int): View {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemCommonHeaderBinding.inflate(inflater, parent, false)
+    override fun isHeader(position: Int) = getItem(position) is CommonItemUI.Header
 
-        return binding.root
+    /**
+     * Find the last header position by item position
+     */
+    override fun getHeaderLayoutView(parent: RecyclerView, position: Int): View? {
+        var headerPosition = position
+        while (headerPosition >= 0) {
+            val item = getItem(headerPosition)
+            if (item is CommonItemUI.Header) {
+                break
+            }
+            headerPosition--
+        }
+        return if (headerPosition != RecyclerView.NO_POSITION) {
+            (onCreateViewHolder(parent, HEADER_TYPE) as CommonHeaderViewHolder).apply {
+                bindViewHolder(this, headerPosition)
+            }.itemView
+        } else {
+            null
+        }
     }
 
     companion object {
-        protected const val DATA_TYPE: Int = 0
-        protected const val HEADER_TYPE: Int = 1
-        protected const val DIVIDER_TYPE: Int = 2
+        protected const val DATA_TYPE: Int = 10
+        protected const val HEADER_TYPE: Int = 11
+        protected const val DIVIDER_TYPE: Int = 12
     }
 }
