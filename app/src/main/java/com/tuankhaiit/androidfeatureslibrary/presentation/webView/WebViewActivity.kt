@@ -18,7 +18,6 @@ class WebViewActivity : BaseActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableFitSystemWindow = true
         binding = ActivityWebviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

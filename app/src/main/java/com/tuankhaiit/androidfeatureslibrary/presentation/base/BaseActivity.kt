@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 
 abstract class BaseActivity : AppCompatActivity() {
-    protected var enableFitSystemWindow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,12 +14,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun setContentView(view: View?) {
         super.setContentView(view)
-        if (enableFitSystemWindow) {
-            view?.fitsSystemWindows = true
-        }
     }
+}
 
-    private fun translateStatusBarAndBottomNavigationBar() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
+fun AppCompatActivity.translateStatusBarAndBottomNavigationBar() {
+    WindowCompat.setDecorFitsSystemWindows(window, false)
 }

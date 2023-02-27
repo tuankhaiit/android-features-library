@@ -19,7 +19,7 @@ class RepoPagingSource(
             LoadResult.Page(
                 data = response.items.map { it.toModel() },
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = nextKey
+                nextKey = nextKey?.takeIf { it < 3 }
             )
         } catch (exception: Exception) {
             LoadResult.Error(exception)

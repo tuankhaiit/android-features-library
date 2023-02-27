@@ -220,11 +220,6 @@ class GithubRepoFragment : BaseFragment() {
                         layoutEmpty.isVisible = isListEmpty
                         rvList.isVisible = !isListEmpty
 
-//                    // Show loading spinner during initial load or refresh
-//                    progressBar.isVisible = loadState.source.refresh is LoadState.Loading
-//                    // Show the retry state if initial load or refresh fails
-//                    btnRetry.isVisible = loadState.source.refresh is LoadState.Error
-
                         // Check error state if exist then show toast
                         // regardless of whether it came from RemoteMediator or PagingSource
                         val statesNeedToCheck = arrayListOf(
