@@ -2,10 +2,7 @@ package com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -27,17 +24,18 @@ import com.tuankhaiit.androidfeatureslibrary.presentation.base.BaseFragment
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.CommonItemUI
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter.CommonLoadStateAdapter
 import com.tuankhaiit.androidfeatureslibrary.presentation.common.adapter.StickyHeaderItemDecoration
+import com.tuankhaiit.androidfeatureslibrary.presentation.extension.marginFitStatusBar
+import com.tuankhaiit.androidfeatureslibrary.presentation.extension.paddingFitBottomNavigationBar
+import com.tuankhaiit.androidfeatureslibrary.presentation.extension.paddingFitStatusBar
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.adapter.OnRepoItemClickListener
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.adapter.RepoAdapter
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiAction
 import com.tuankhaiit.androidfeatureslibrary.presentation.githubRepo.model.GithubRepoUiState
 import com.tuankhaiit.androidfeatureslibrary.presentation.webView.WebViewActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-@FlowPreview
 @AndroidEntryPoint
 class GithubRepoFragment : BaseFragment() {
 
@@ -63,6 +61,9 @@ class GithubRepoFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
+        binding.toolbar.marginFitStatusBar()
+        binding.refreshLayout.paddingFitBottomNavigationBar()
+
         binding.bindState(viewLifecycleOwner, viewModel.state, viewModel.uiActions)
 
         viewLifecycleOwner.lifecycleScope.launch {

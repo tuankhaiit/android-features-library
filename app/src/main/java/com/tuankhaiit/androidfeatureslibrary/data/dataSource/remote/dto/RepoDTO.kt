@@ -1,6 +1,7 @@
 package com.tuankhaiit.androidfeatureslibrary.data.dataSource.remote.dto
 
 import com.google.gson.annotations.SerializedName
+import com.tuankhaiit.androidfeatureslibrary.data.dataSource.local.entity.RepoEntity
 import com.tuankhaiit.androidfeatureslibrary.domain.model.RepoModel
 import kotlin.random.Random
 
@@ -32,6 +33,18 @@ data class RepoDTO(
             stars = stars ?: 0,
             forks = forks ?: 0,
             language = language ?: ""
+        )
+    }
+    fun toEntity() : RepoEntity {
+        return RepoEntity(
+            id = id ?: Random.nextLong(100000),
+            name = name,
+            fullName = fullName,
+            description = description,
+            url = url,
+            stars = stars,
+            forks = forks,
+            language = language
         )
     }
 }

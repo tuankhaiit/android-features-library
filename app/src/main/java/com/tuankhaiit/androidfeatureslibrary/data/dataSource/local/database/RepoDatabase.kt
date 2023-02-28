@@ -4,17 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.tuankhaiit.androidfeatureslibrary.data.dataSource.local.dao.RemoteKeysDao
 import com.tuankhaiit.androidfeatureslibrary.data.dataSource.local.dao.RepoDao
+import com.tuankhaiit.androidfeatureslibrary.data.dataSource.local.entity.RemoteKeys
 import com.tuankhaiit.androidfeatureslibrary.data.dataSource.local.entity.RepoEntity
 
 @Database(
-    entities = [RepoEntity::class],
+    entities = [RepoEntity::class, RemoteKeys::class],
     version = 1,
     exportSchema = false
 )
 abstract class RepoDatabase : RoomDatabase() {
 
     abstract fun reposDao(): RepoDao
+    abstract fun remoteKeysDao(): RemoteKeysDao
+
 
     companion object {
 
@@ -27,8 +31,10 @@ abstract class RepoDatabase : RoomDatabase() {
             }
 
         private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context.applicationContext,
-                RepoDatabase::class.java, "Github.db")
+            Room.databaseBuilder(
+                context.applicationContext,
+                RepoDatabase::class.java, "Github.db"
+            )
                 .build()
     }
 }

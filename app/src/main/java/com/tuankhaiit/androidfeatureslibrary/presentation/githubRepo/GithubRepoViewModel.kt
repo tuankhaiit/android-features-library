@@ -89,10 +89,13 @@ class GithubRepoViewModel @Inject constructor(
             }.map {
                 it.insertSeparators { before, after ->
                     if (before == null) {
-                        val data = after?.data?.roundedStarCount ?: 0
+                        // Case empty data
+                        if (after == null) return@insertSeparators null
+
+                        val data = after.data?.roundedStarCount ?: 0
                         if (data >= 1) {
                             return@insertSeparators CommonItemUI.Header(
-                                "${after?.data?.roundedStarCount}0.000+ stars"
+                                "${after.data?.roundedStarCount}0.000+ stars"
                             )
                         } else {
                             return@insertSeparators CommonItemUI.Header(

@@ -35,20 +35,25 @@
             style="@style/List.SearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="@dimen/screen_padding"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_search_field"
             app:layout_scrollFlags="scroll|enterAlways" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <FrameLayout
         android:id="@+id/layoutEmpty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Empty data"
-        android:textSize="20sp"
-        app:layout_anchor="@id/refreshLayout"
-        app:layout_anchorGravity="center" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@id/refreshLayout">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Not found"
+            android:textSize="20sp" />
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
